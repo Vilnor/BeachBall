@@ -664,8 +664,10 @@ BeachBall.MontyHaul = function() {
 }
 
 BeachBall.ClickBeach = function(number) {
-	if (Molpy.Got('Temporal Rift') == 0 && Molpy.ninjad != 0 && BeachBall.Time_to_ONG >= 5){
-		Molpy.ClickBeach();
+	if (BeachBall.Settings['Enabled'].status == 1) {
+		if (Molpy.Got('Temporal Rift') == 0 && Molpy.ninjad != 0 && BeachBall.Time_to_ONG >= 5){
+			Molpy.ClickBeach();
+		}
 	}
 }
 
@@ -771,39 +773,40 @@ BeachBall.RedundaKitty = function() {
 		//Update the title, and determine the RK level
 		document.title = "! kitten !";
 		BeachBall.RKLevel = Molpy.Redacted.location - 1;
-		
+		if (BeachBall.Settings['Enabled'].status == 1) {
 		//If RKAutoClick is Selected
-		if (meRK.status == 2) {
-			//If it is a Logicat, Solve and Submit
-			if (Molpy.PuzzleGens["redacted"].active) {
+			if (meRK.status == 2) {
+				//If it is a Logicat, Solve and Submit
+				if (Molpy.PuzzleGens["redacted"].active) {
+					BeachBall.SolveLogic("redacted");
+				}
+				//Otherwise, click the Redundakitty 
+				else {
+					Molpy.Redacted.onClick(BeachBall.RKLevel);
+				}
+			}
+			//Otherwise if Find RK is selected, find the RK
+			else if (meRK.status == 1) {
+				BeachBall.FindRK();
+			}
+			
+			else if (meLC.status == 1) {
 				BeachBall.SolveLogic("redacted");
 			}
-			//Otherwise, click the Redundakitty 
-			else {
-				Molpy.Redacted.onClick(BeachBall.RKLevel);
+			
+			//If the RK is visible, then highlight it
+			if ($('#redacteditem').length) {
+				$('#redacteditem').css("border","2px solid red");
 			}
-		}
-		//Otherwise if Find RK is selected, find the RK
-		else if (meRK.status == 1) {
-			BeachBall.FindRK();
-		}
-		
-		else if (meLC.status == 1) {
-			BeachBall.SolveLogic("redacted");
-		}
-		
-		//If the RK is visible, then highlight it
-		if ($('#redacteditem').length) {
-			$('#redacteditem').css("border","2px solid red");
-		}
-		
-		//If RK Audio Alert Enabled, Play Alert
-		if (BeachBall.Settings['AudioAlerts'].status == 1 || BeachBall.Settings['AudioAlerts'].status == 4){
-			BeachBall.PlayRKAlert();
-		}
-		// If LC Audio Alert Enabled and LC is available, Play Alert
-		else if (BeachBall.Settings['AudioAlerts'].status == 2 && Molpy.Redacted.DrawType[Molpy.Redacted.DrawType.length-1] == 'hide2') {
-			BeachBall.PlayRKAlert();
+			
+			//If RK Audio Alert Enabled, Play Alert
+			if (BeachBall.Settings['AudioAlerts'].status == 1 || BeachBall.Settings['AudioAlerts'].status == 4){
+				BeachBall.PlayRKAlert();
+			}
+			// If LC Audio Alert Enabled and LC is available, Play Alert
+			else if (BeachBall.Settings['AudioAlerts'].status == 2 && Molpy.Redacted.DrawType[Molpy.Redacted.DrawType.length-1] == 'hide2') {
+				BeachBall.PlayRKAlert();
+			}
 		}
 	}
 	
@@ -1157,6 +1160,13 @@ BeachBall.LoadDefaultSetting = function (option, key) {
 		if (key == 'setting')	{return 0;}
 		if (key == 'desc')		{return ['Off', 'On - Flux Cristal', 'On - ONG'];}
 	}
+	else if (option == 'Enabled') {
+		if (key == 'title')		{return 'Enabled';}
+		if (key == 'status') 	{return 1;}
+		if (key == 'maxStatus') {return 1;}
+		if (key == 'setting')	{return 0;}
+		if (key == 'desc')		{return ['Off', 'On'];}
+	}
 	else {
 		Molpy.Notify(BeachBall.Settings[option] + ' setting not found. Please contact developer.', 1);
 		return -1;
@@ -1164,7 +1174,7 @@ BeachBall.LoadDefaultSetting = function (option, key) {
 }
 
 BeachBall.LoadSettings = function() {
-	BeachBall.AllOptions = [ 'AudioAlerts', 'BeachAutoClick', 'CagedAutoClick', 'LCSolver', 'MHAutoClick', 'RefreshRate', 'RKAutoClick', 'ToolFactory','RiftAutoClick'];
+	BeachBall.AllOptions = [ 'Enabled', 'AudioAlerts', 'BeachAutoClick', 'CagedAutoClick', 'LCSolver', 'MHAutoClick', 'RefreshRate', 'RKAutoClick', 'ToolFactory','RiftAutoClick'];
 	BeachBall.AllOptionsKeys = ['title', 'status', 'maxStatus', 'setting', 'minSetting', 'maxSetting', 'msg', 'desc'];
 	BeachBall.SavedOptionsKeys = ['status', 'setting'];
 	BeachBall.Settings = {};
@@ -1257,10 +1267,12 @@ function BeachBallMainProgram() {
 	//Molpy.Notify('Tick', 0);
 	BeachBall.Time_to_ONG = Molpy.NPlength - Molpy.ONGelapsed/1000;
 	BeachBall.RedundaKitty();
-	BeachBall.CagedAutoClick();
-	BeachBall.Ninja();
-	BeachBall.MontyHaul();
-	BeachBall.RiftAutoClick();
+	if (BeachBall.Settings['Enabled'].status == 1) {
+		BeachBall.CagedAutoClick();
+		BeachBall.Ninja();
+		BeachBall.MontyHaul();
+		BeachBall.RiftAutoClick();
+	}
 	BeachBall.StartLoop();
 }
 
