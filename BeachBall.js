@@ -694,10 +694,7 @@ BeachBall.RiftAutoClick = function () {
 				return;
 			 // ninja click has passed, rift occuring, sand in stock
 			if (Molpy.Got('Temporal Rift') && (BeachBall.GetBeachState() == 'beachsafe')) {
-                            /* Vilnor - Change to spend 1 sand instead of has, to allow Aleph One, and cracks checks to work */
-                            if (Molpy.Boosts['Sand'].Spend(1,1)) {
                                 Molpy.RiftJump();
-                            }
 			}
 
 			break;
