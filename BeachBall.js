@@ -679,14 +679,13 @@ BeachBall.RiftAutoClick = function () {
 	
 		case 1 : // farm crystals
 			// check TL
-			if (!(Molpy.Boosts['Time Lord'] && Molpy.Boosts['Time Lord'].bought && Molpy.Boosts['Time Lord'].power))
+			if (!(Molpy.Boosts['Time Lord'] && Molpy.Boosts['Time Lord'].bought && Molpy.Boosts['Time Lord'].power && isFinite(Molpy.Boosts['FluxCrystals'].power))
 				return;
 			//Vilnor - if Flux Harvest is purchased, and available use it
-                        if (Molpy.Boosts['Flux Harvest'].bought && isFinite(Molpy.Boosts['FluxCrystals'].power)) {
+                        if (Molpy.Boosts['Flux Harvest'].bought)) {
                             Molpy.FluxHarvest();
                         }
-
-			if ((!Molpy.Got('Temporal Rift')) && (BeachBall.GetBeachState() == 'beachsafe'))
+			else if ((!Molpy.Got('Temporal Rift')) && (BeachBall.GetBeachState() == 'beachsafe'))
 				Molpy.RiftJump();
 			break;
 			
