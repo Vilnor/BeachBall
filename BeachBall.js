@@ -1080,6 +1080,9 @@ BeachBall.DisplayDescription = function(option,type) {
 		return description;
 	if (type == 'title')
 		return title;
+        
+        Molpy.Notify(BeachBall.Settings[option] + ' setting not found. Please contact developer.', 1);
+	return -1;
 }
 
 BeachBall.LoadDefaultSetting = function (option, key) {
@@ -1163,10 +1166,9 @@ BeachBall.LoadDefaultSetting = function (option, key) {
 		if (key == 'setting')	{return 0;}
 		if (key == 'desc')		{return ['Off', 'On'];}
 	}
-	else {
-		Molpy.Notify(BeachBall.Settings[option] + ' setting not found. Please contact developer.', 1);
-		return -1;
-	}
+	Molpy.Notify(BeachBall.Settings[option] + ' setting not found. Please contact developer.', 1);
+	return -1;
+
 }
 
 BeachBall.LoadSettings = function() {
