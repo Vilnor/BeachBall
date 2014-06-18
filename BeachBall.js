@@ -6,7 +6,7 @@ BeachBall.lootBoxes = ['boosts', 'badges', 'hpt', 'ninj', 'chron', 'cyb', 'bean'
 BeachBall.resetCaged = 0;
 
 //Version Information
-BeachBall.version = '5.2.0.4';
+BeachBall.version = '5.2.0.4 V';
 BeachBall.SCBversion = '3.4121'; //Last SandCastle Builder version tested
 
 //BB Audio Alerts Variables
@@ -674,12 +674,15 @@ BeachBall.ClickBeach = function(number) {
 BeachBall.RiftAutoClick = function () {
 	if (BeachBall.Settings['RiftAutoClick'].status == 0)
 		return;
+            
+        if (!(Molpy.Boosts['Time Lord'] && Molpy.Boosts['Time Lord'].bought && Molpy.Boosts['Time Lord'].power))
+	    return;
 		
 	switch (parseInt(BeachBall.Settings['RiftAutoClick'].status)) {
 	
 		case 1 : // farm crystals
 			// check TL
-			if (!(Molpy.Boosts['Time Lord'] && Molpy.Boosts['Time Lord'].bought && Molpy.Boosts['Time Lord'].power && isFinite(Molpy.Boosts['FluxCrystals'].power)))
+			if (!isFinite(Molpy.Boosts['FluxCrystals'].power))
 				return;
 			//Vilnor - if Flux Harvest is purchased, and available use it
                         if (Molpy.Boosts['Flux Harvest'].bought) {
@@ -690,14 +693,20 @@ BeachBall.RiftAutoClick = function () {
 			break;
 			
 		case 2 : // rift to ONG
-			if (!(Molpy.Boosts['Time Lord'] && Molpy.Boosts['Time Lord'].bought && Molpy.Boosts['Time Lord'].power))
-				return;
-			 // ninja click has passed, rift occuring, sand in stock
-			if (Molpy.Got('Temporal Rift') && (BeachBall.GetBeachState() == 'beachsafe')) {
+			 // ninja click has passed, rift occuring
+			if (Molpy.Got('Temporal Rift'))
+                        {
+                            if (BeachBall.GetBeachState() == 'beachsafe') {
                                 Molpy.RiftJump();
-			}
+                            }
+                        }
 
 			break;
+                case 3 : // rift for Ninja Holidip
+                    if (Molpy.Got('Temporal Rift'))
+                    {
+                        Molpy.RiftJump();
+                    }
 	}
 }
 
@@ -1081,7 +1090,6 @@ BeachBall.DisplayDescription = function(option,type) {
 	if (type == 'title')
 		return title;
         
-        Molpy.Notify(BeachBall.Settings[option] + ' setting not found. Please contact developer.', 1);
 	return -1;
 }
 
@@ -1155,9 +1163,9 @@ BeachBall.LoadDefaultSetting = function (option, key) {
 	else if (option == 'RiftAutoClick') {
 		if (key == 'title')		{return 'Rift Autoclick';}
 		if (key == 'status') 	{return 0;}
-		if (key == 'maxStatus') {return 2;}
+		if (key == 'maxStatus') {return 3;}
 		if (key == 'setting')	{return 0;}
-		if (key == 'desc')		{return ['Off', 'On - Flux Cristal', 'On - ONG'];}
+		if (key == 'desc')		{return ['Off', 'On - Flux Cristal', 'On - ONG', 'On - Ninja Ritual'];}
 	}
 	else if (option == 'Enabled') {
 		if (key == 'title')		{return 'Enabled';}
@@ -1166,9 +1174,10 @@ BeachBall.LoadDefaultSetting = function (option, key) {
 		if (key == 'setting')	{return 0;}
 		if (key == 'desc')		{return ['Off', 'On'];}
 	}
-	Molpy.Notify(BeachBall.Settings[option] + ' setting not found. Please contact developer.', 1);
+        else {
+            Molpy.Notify('option:  ' + option + ' default setting not found. Please contact developer.', 1);
+        }
 	return -1;
-
 }
 
 BeachBall.LoadSettings = function() {
