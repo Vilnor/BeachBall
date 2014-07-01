@@ -248,6 +248,8 @@ BeachBall.PuzzleConstructor = function(name) {
 								me.claim[k].result = false;
 							}
 							
+							if (me.claim.length == 2) //assumes only 1 or 2 claims per statement
+							{
 							// Figure out which claim is k
 							var m = 0;
 							if (k == 0) {
@@ -289,6 +291,7 @@ BeachBall.PuzzleConstructor = function(name) {
 								if (!this.error) {
 									change = true;
 								}
+							}
 							}
 						}
 					}
